@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 
 int CodigoInstrucao(char * inst) {
     int cod_inst;
@@ -50,10 +51,23 @@ int main( ) {
     FILE *arq;
     arq = fopen("entrada.txt", "rt");
     char linha[100];
+    char *token;
+    const char separador[2] = " ";
+    int cod_token;
+    char temp[6];
 
     while (!feof(arq)) {
         fgets(linha, 100, arq);
-        printf("%s", linha);
+        token = strtok(linha, separador);
+        while( token != NULL ) {
+            temp = token;
+            cod_token =  CodigoInstrucao(temp);
+            if(temp == "READ")
+                printf("EH READ!");
+            //printf("%sX", token);
+            //printf("%iX", cod_token);
+            token = strtok(NULL, separador);
+        } 
     }
 
     fclose(arq);
