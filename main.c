@@ -4,41 +4,41 @@
 int CodigoInstrucao(char * inst) {
     int cod_inst;
     
-    if(inst == "LOAD")
+    if(strcmp(inst, "LOAD") == 0)
         cod_inst = 1;
-    else if(inst == "STORE")
+    else if(strcmp(inst, "STORE") == 0)
         cod_inst = 2;
-    else if(inst == "ADD")
+    else if(strcmp(inst, "ADD") == 0)
         cod_inst = 3;
-    else if(inst == "SUB")
+    else if(strcmp(inst, "SUB") == 0)
         cod_inst = 4;
-    else if(inst == "JMP")
+    else if(strcmp(inst, "JMP") == 0)
         cod_inst = 5;
-    else if(inst == "JPG")
+    else if(strcmp(inst, "JPG") == 0)
         cod_inst = 6;
-    else if(inst == "JPL")
+    else if(strcmp(inst, "JPL") == 0)
         cod_inst = 7;
-    else if(inst == "JPE")
+    else if(strcmp(inst, "JPE") == 0)
         cod_inst = 8;
-    else if(inst == "JPNE")
+    else if(strcmp(inst, "JPNE") == 0)
         cod_inst = 9;
-    else if(inst == "PUSH")
+    else if(strcmp(inst, "PUSH") == 0)
         cod_inst = 10;
-    else if(inst == "POP")
+    else if(strcmp(inst, "POP") == 0)
         cod_inst = 11;
-    else if(inst == "READ")
+    else if(strcmp(inst, "READ") == 0)
         cod_inst = 12;
-    else if(inst == "WRITE")
+    else if(strcmp(inst, "WRITE") == 0)
         cod_inst = 13;
-    else if(inst == "CALL")
+    else if(strcmp(inst, "CALL") == 0)
         cod_inst = 14;
-    else if(inst == "RET")
+    else if(strcmp(inst, "RET") == 0)
         cod_inst = 15;
-    else if(inst == "HALT")
+    else if(strcmp(inst, "HALT") == 0)
         cod_inst = 16;
-    else if(inst == "WORD")
+    else if(strcmp(inst, "WORD") == 0)
         cod_inst = -1;
-    else if(inst == "END")
+    else if(strcmp(inst, "END") == 0)
         cod_inst = -2;
     else
         cod_inst = 0;
@@ -54,18 +54,15 @@ int main( ) {
     char *token;
     const char separador[2] = " ";
     int cod_token;
-    char temp[6];
+
+    printf("MV1 ");
 
     while (!feof(arq)) {
         fgets(linha, 100, arq);
         token = strtok(linha, separador);
         while( token != NULL ) {
-            temp = token;
-            cod_token =  CodigoInstrucao(temp);
-            if(temp == "READ")
-                printf("EH READ!");
-            //printf("%sX", token);
-            //printf("%iX", cod_token);
+            cod_token =  CodigoInstrucao(token);
+            printf("%i ", cod_token);
             token = strtok(NULL, separador);
         } 
     }
