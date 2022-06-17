@@ -107,7 +107,7 @@ int RetornaEndereco(char * sim, Simbolos *tab) {
             end = temp->endereco;
             break;
         }
-        tab =temp->proximo;
+        temp = temp->proximo;
     }
     return end;
 }
@@ -165,37 +165,44 @@ int main( ) {
     }
     fclose(arq);
 
+    int end_var;
+    end_atual = 0;
     arq = fopen("entrada.txt", "rt");
     while (!feof(arq)) {
         fgets(linha, 100, arq);
         linha[strcspn(linha, "\n")] = 0;
         token = strtok(linha, separador);
         if(strchr(token, ':') != NULL) {
-            tam_token = strlen(token);
-            token[tam_token-1] = '\0';
-            tabela = AdicionaEndereco(token, end_atual, tabela);
             token = strtok(NULL, separador);
         }
         cod_token = RetornaCodigoInstrucao(token);
         if(cod_token < 16) {
-            token = strtok(NULL, separador);
-            tabela = AdicionaSimbolo(token, tabela);
             end_atual = end_atual + 2;
+            printf("%i ", cod_token);
+            token = strtok(NULL, separador);
+            end_var = RetornaEndereco(token, tabela);
+            end_var = end_var - end_atual;
+            printf("%i ", end_var);
         } else if(cod_token == 16) {
             end_atual = end_atual + 1;
+            printf("%i ", cod_token);
         } else if (cod_token == 17) {
-            token = strtok(NULL, separador);
             end_atual = end_atual + 1;
+            printf("%i ", 0);
         } else if (cod_token == 18) {
             break;
         }
     }
     fclose(arq);
     
+    
+    
+    /*
     while(tabela != NULL) {
         printf("%s ", tabela->simbolo);
         tabela = tabela->proximo;
     }
+    */
 }
 
 /*
