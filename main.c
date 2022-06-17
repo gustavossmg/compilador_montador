@@ -112,22 +112,6 @@ int RetornaEndereco(char * sim, Simbolos *tab) {
     return end;
 }
 
-/*
-int main( ) {
-    char word1[3] = "abc";
-    char word2[3] = "def";
-    int prog_size = 0;
-
-    Simbolos *tabela = NULL;
-
-    AdicionaSimbolo(word1, tabela);
-
-    while(tabela != NULL) {
-        printf("%s ", tabela->simbolo);
-        tabela = tabela->proximo;
-    }
-}
-*/
 
 int main( ) {
     FILE *arq;
@@ -194,44 +178,4 @@ int main( ) {
         }
     }
     fclose(arq);
-    
-    
-    
-    /*
-    while(tabela != NULL) {
-        printf("%s ", tabela->simbolo);
-        tabela = tabela->proximo;
-    }
-    */
 }
-
-/*
-int main( ) {
-    FILE *arq;
-    arq = fopen("entrada.txt", "rt");
-    char linha[100];
-    char *token;
-    const char separador[2] = " ";
-    int cod_token;
-
-    printf("MV1 ");
-
-    while (!feof(arq)) {
-        fgets(linha, 100, arq);
-        token = strtok(linha, separador);
-        while( token != NULL ) {
-            cod_token =  CodigoInstrucao(token);
-            printf("%i ", cod_token);
-            token = strtok(NULL, separador);
-        } 
-    }
-
-    fclose(arq);
-
-    char * exemplo = "END";
-    int codigo_exemplo = CodigoInstrucao(exemplo);
-    printf("%i\n", codigo_exemplo);
-
-    return 0;
-}
-*/
