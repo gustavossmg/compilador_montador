@@ -55,10 +55,12 @@ typedef struct Simbolos {
 } Simbolos;
 
 int VerificaSimbolo(char * sim, Simbolos *tab) {
-    while(tab != NULL) {
-        if(strcmp(sim, tab->simbolo))
+    Simbolos *temp = tab;
+    while(temp != NULL) {
+        if(strcmp(sim, temp->simbolo) == 0) {
             return 1;
-        tab = tab->proximo;
+        }
+        temp = temp->proximo;
     }
     return 0;
 }
@@ -68,11 +70,11 @@ Simbolos * AdicionaSimbolo(char * sim, Simbolos *tab) {
         Simbolos *novo_sim;
         novo_sim = (Simbolos *) malloc(sizeof(Simbolos));
         strcpy(novo_sim->simbolo, sim);
-        novo_sim->endereco = -1;
+        novo_sim->endereco = NULL;
         novo_sim->proximo = NULL;
         
         Simbolos *temp = tab;
-        while(temp->proximo != NULL) {
+        while( (temp != NULL) && (temp->proximo != NULL) ) {
             temp = temp->proximo;
         }
         
@@ -87,66 +89,109 @@ Simbolos * AdicionaSimbolo(char * sim, Simbolos *tab) {
 
 Simbolos * AdicionaEndereco(char * sim, int end, Simbolos *tab) {
     tab = AdicionaSimbolo(sim, tab);
-    while(tab != NULL) {
-        if(strcmp(sim, tab->simbolo)) {
-            tab->endereco = end;
-            break;
+    Simbolos *temp = tab;
+    while(temp != NULL) {
+        if(strcmp(sim, temp->simbolo) == 0) {
+            temp->endereco = end;
         }
-        tab = tab->proximo;
+        temp = temp->proximo;
     }
     return tab;
 }
 
 int RetornaEndereco(char * sim, Simbolos *tab) {
     int end;
-    while(tab != NULL) {
-        if(strcmp(sim, tab->simbolo)) {
-            end = tab->endereco;
+    Simbolos *temp = tab;
+    while(temp != NULL) {
+        if(strcmp(sim, temp->simbolo) == 0) {
+            end = temp->endereco;
             break;
         }
-        tab =tab->proximo;
+        tab =temp->proximo;
     }
     return end;
 }
 
+/*
+int main( ) {
+    char word1[3] = "abc";
+    char word2[3] = "def";
+    int prog_size = 0;
 
+    Simbolos *tabela = NULL;
+
+    AdicionaSimbolo(word1, tabela);
+
+    while(tabela != NULL) {
+        printf("%s ", tabela->simbolo);
+        tabela = tabela->proximo;
+    }
+}
+*/
 
 int main( ) {
     FILE *arq;
-    arq = fopen("entrada.txt", "rt");
     char linha[100];
     char *token;
     const char separador[2] = " ";
-    int cod_token;
+    int cod_token, tam_token;
     int end_atual = 0;
     Simbolos *tabela = NULL;
 
+    arq = fopen("entrada.txt", "rt");
     while (!feof(arq)) {
         fgets(linha, 100, arq);
         linha[strcspn(linha, "\n")] = 0;
         token = strtok(linha, separador);
         if(strchr(token, ':') != NULL) {
-            token[-1] = '\0';
+            tam_token = strlen(token);
+            token[tam_token-1] = '\0';
             tabela = AdicionaEndereco(token, end_atual, tabela);
-            token = strtok(linha, separador);
+            token = strtok(NULL, separador);
         }
-
         cod_token = RetornaCodigoInstrucao(token);
-
         if(cod_token < 16) {
-            token = strtok(linha, separador);
+            token = strtok(NULL, separador);
             tabela = AdicionaSimbolo(token, tabela);
             end_atual = end_atual + 2;
         } else if(cod_token == 16) {
             end_atual = end_atual + 1;
         } else if (cod_token == 17) {
-            token = strtok(linha, separador);
+            token = strtok(NULL, separador);
             end_atual = end_atual + 1;
         } else if (cod_token == 18) {
             break;
         }
     }
+    fclose(arq);
 
+    arq = fopen("entrada.txt", "rt");
+    while (!feof(arq)) {
+        fgets(linha, 100, arq);
+        linha[strcspn(linha, "\n")] = 0;
+        token = strtok(linha, separador);
+        if(strchr(token, ':') != NULL) {
+            tam_token = strlen(token);
+            token[tam_token-1] = '\0';
+            tabela = AdicionaEndereco(token, end_atual, tabela);
+            token = strtok(NULL, separador);
+        }
+        cod_token = RetornaCodigoInstrucao(token);
+        if(cod_token < 16) {
+            token = strtok(NULL, separador);
+            tabela = AdicionaSimbolo(token, tabela);
+            end_atual = end_atual + 2;
+        } else if(cod_token == 16) {
+            end_atual = end_atual + 1;
+        } else if (cod_token == 17) {
+            token = strtok(NULL, separador);
+            end_atual = end_atual + 1;
+        } else if (cod_token == 18) {
+            break;
+        }
+    }
+    fclose(arq);
+    
     while(tabela != NULL) {
         printf("%s ", tabela->simbolo);
         tabela = tabela->proximo;
