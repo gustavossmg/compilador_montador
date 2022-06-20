@@ -69,7 +69,7 @@ Simbolos * AdicionaSimbolo(char * simbolo, Simbolos *tabela) {
         Simbolos *novo_simbolo;
         novo_simbolo = (Simbolos *) malloc(sizeof(Simbolos));
         strcpy(novo_simbolo->s_simbolo, simbolo);
-        novo_simbolo->s_endereco = NULL;
+        novo_simbolo->s_endereco = -1;
         novo_simbolo->proximo = NULL;
         
         Simbolos *temp = tabela;
@@ -111,7 +111,10 @@ int RetornaEndereco(char * simbolo, Simbolos *tabela) {
 }
 
 
-int main( ) {
+int main(int argc, char *argv[ ]) {
+    
+    // Primeiro Passo do Montador
+    
     FILE *arquivo_entrada;
     char linha[100];
     char *token;
@@ -147,9 +150,26 @@ int main( ) {
     }
     fclose(arquivo_entrada);
 
-    int posicao_operando_label;
-    posicao_atual = 0;
+
+    // Segundo Passo do Montador
+
+    FILE *arquivo_saida;
+    int posicao_operando_label, endereco_inicial, pilha_inicial;
+    char cabecalho[4] = "MV1";
+    
+    endereco_inicial = 0;
+    pilha_inicial = 999;
+
     arquivo_entrada = fopen("entrada.txt", "rt");
+    arquivo_saida = fopen(argv[1], "w");
+
+    fprintf(arquivo_saida, "%s ", cabecalho);
+    fprintf(arquivo_saida, "%i ", endereco_inicial);
+    fprintf(arquivo_saida, "%i ", pilha_inicial);
+    fprintf(arquivo_saida, "%i ", posicao_atual);
+
+    posicao_atual = 0;
+
     while (!feof(arquivo_entrada)) {
         fgets(linha, 100, arquivo_entrada);
         linha[strcspn(linha, "\n")] = 0;
@@ -160,20 +180,21 @@ int main( ) {
         codigo_token = RetornaCodigoInstrucao(token);
         if(codigo_token < 15) {
             posicao_atual = posicao_atual + 2;
-            printf("%i ", codigo_token);
+            fprintf(arquivo_saida, "%i ", codigo_token);
             token = strtok(NULL, separador);
             posicao_operando_label = RetornaEndereco(token, tabela);
             posicao_operando_label = posicao_operando_label - posicao_atual;
-            printf("%i ", posicao_operando_label);
+            fprintf(arquivo_saida, "%i ", posicao_operando_label);
         } else if(codigo_token < 17) {
             posicao_atual = posicao_atual + 1;
-            printf("%i ", codigo_token);
+            fprintf(arquivo_saida, "%i ", codigo_token);
         } else if (codigo_token == 17) {
             posicao_atual = posicao_atual + 1;
-            printf("%i ", 0);
+            fprintf(arquivo_saida, "%i ", 0);
         } else if (codigo_token == 18) {
             break;
         }
     }
     fclose(arquivo_entrada);
+    fclose(arquivo_saida);    
 }
