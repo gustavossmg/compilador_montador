@@ -3,179 +3,177 @@
 #include <stdlib.h>
 
 
-int RetornaCodigoInstrucao(char * inst) {
-    int cod_inst;
+int RetornaCodigoInstrucao(char * instrucao) {
+    int codigo_instrucao;
     
-    if(strcmp(inst, "LOAD") == 0)
-        cod_inst = 1;
-    else if(strcmp(inst, "STORE") == 0)
-        cod_inst = 2;
-    else if(strcmp(inst, "ADD") == 0)
-        cod_inst = 3;
-    else if(strcmp(inst, "SUB") == 0)
-        cod_inst = 4;
-    else if(strcmp(inst, "JMP") == 0)
-        cod_inst = 5;
-    else if(strcmp(inst, "JPG") == 0)
-        cod_inst = 6;
-    else if(strcmp(inst, "JPL") == 0)
-        cod_inst = 7;
-    else if(strcmp(inst, "JPE") == 0)
-        cod_inst = 8;
-    else if(strcmp(inst, "JPNE") == 0)
-        cod_inst = 9;
-    else if(strcmp(inst, "PUSH") == 0)
-        cod_inst = 10;
-    else if(strcmp(inst, "POP") == 0)
-        cod_inst = 11;
-    else if(strcmp(inst, "READ") == 0)
-        cod_inst = 12;
-    else if(strcmp(inst, "WRITE") == 0)
-        cod_inst = 13;
-    else if(strcmp(inst, "CALL") == 0)
-        cod_inst = 14;
-    else if(strcmp(inst, "RET") == 0)
-        cod_inst = 15;
-    else if(strcmp(inst, "HALT") == 0)
-        cod_inst = 16;
-    else if(strcmp(inst, "WORD") == 0)
-        cod_inst = 17;
-    else if(strcmp(inst, "END") == 0)
-        cod_inst = 18;
+    if(strcmp(instrucao, "LOAD") == 0)
+        codigo_instrucao = 1;
+    else if(strcmp(instrucao, "STORE") == 0)
+        codigo_instrucao = 2;
+    else if(strcmp(instrucao, "ADD") == 0)
+        codigo_instrucao = 3;
+    else if(strcmp(instrucao, "SUB") == 0)
+        codigo_instrucao = 4;
+    else if(strcmp(instrucao, "JMP") == 0)
+        codigo_instrucao = 5;
+    else if(strcmp(instrucao, "JPG") == 0)
+        codigo_instrucao = 6;
+    else if(strcmp(instrucao, "JPL") == 0)
+        codigo_instrucao = 7;
+    else if(strcmp(instrucao, "JPE") == 0)
+        codigo_instrucao = 8;
+    else if(strcmp(instrucao, "JPNE") == 0)
+        codigo_instrucao = 9;
+    else if(strcmp(instrucao, "PUSH") == 0)
+        codigo_instrucao = 10;
+    else if(strcmp(instrucao, "POP") == 0)
+        codigo_instrucao = 11;
+    else if(strcmp(instrucao, "READ") == 0)
+        codigo_instrucao = 12;
+    else if(strcmp(instrucao, "WRITE") == 0)
+        codigo_instrucao = 13;
+    else if(strcmp(instrucao, "CALL") == 0)
+        codigo_instrucao = 14;
+    else if(strcmp(instrucao, "RET") == 0)
+        codigo_instrucao = 15;
+    else if(strcmp(instrucao, "HALT") == 0)
+        codigo_instrucao = 16;
+    else if(strcmp(instrucao, "WORD") == 0)
+        codigo_instrucao = 17;
+    else if(strcmp(instrucao, "END") == 0)
+        codigo_instrucao = 18;
     else
-        cod_inst = 0;
+        codigo_instrucao = 0;
     
-    return cod_inst;
+    return codigo_instrucao;
 }
 
 typedef struct Simbolos {
-    char simbolo[15];
-    int endereco;
+    char s_simbolo[15];
+    int s_endereco;
     struct Simbolos *proximo;
 } Simbolos;
 
-int VerificaSimbolo(char * sim, Simbolos *tab) {
-    Simbolos *temp = tab;
-    while(temp != NULL) {
-        if(strcmp(sim, temp->simbolo) == 0) {
+int VerificaSimbolo(char * simbolo, Simbolos *tabela) {
+    while(tabela != NULL) {
+        if(strcmp(simbolo, tabela->s_simbolo) == 0) {
             return 1;
         }
-        temp = temp->proximo;
+        tabela = tabela->proximo;
     }
     return 0;
 }
 
-Simbolos * AdicionaSimbolo(char * sim, Simbolos *tab) {
-    if(VerificaSimbolo(sim, tab) == 0) {
-        Simbolos *novo_sim;
-        novo_sim = (Simbolos *) malloc(sizeof(Simbolos));
-        strcpy(novo_sim->simbolo, sim);
-        novo_sim->endereco = NULL;
-        novo_sim->proximo = NULL;
+Simbolos * AdicionaSimbolo(char * simbolo, Simbolos *tabela) {
+    if(VerificaSimbolo(simbolo, tabela) == 0) {
+        Simbolos *novo_simbolo;
+        novo_simbolo = (Simbolos *) malloc(sizeof(Simbolos));
+        strcpy(novo_simbolo->s_simbolo, simbolo);
+        novo_simbolo->s_endereco = NULL;
+        novo_simbolo->proximo = NULL;
         
-        Simbolos *temp = tab;
+        Simbolos *temp = tabela;
         while( (temp != NULL) && (temp->proximo != NULL) ) {
             temp = temp->proximo;
         }
         
         if(temp == NULL) {
-            tab = novo_sim;
+            tabela = novo_simbolo;
         } else {
-            temp->proximo = novo_sim;
+            temp->proximo = novo_simbolo;
         }
     }
-    return tab;
+    return tabela;
 }
 
-Simbolos * AdicionaEndereco(char * sim, int end, Simbolos *tab) {
-    tab = AdicionaSimbolo(sim, tab);
-    Simbolos *temp = tab;
+Simbolos * AdicionaEndereco(char * simbolo, int endereco, Simbolos *tabela) {
+    tabela = AdicionaSimbolo(simbolo, tabela);
+    Simbolos *temp = tabela;
     while(temp != NULL) {
-        if(strcmp(sim, temp->simbolo) == 0) {
-            temp->endereco = end;
+        if(strcmp(simbolo, temp->s_simbolo) == 0) {
+            temp->s_endereco = endereco;
         }
         temp = temp->proximo;
     }
-    return tab;
+    return tabela;
 }
 
-int RetornaEndereco(char * sim, Simbolos *tab) {
-    int end;
-    Simbolos *temp = tab;
-    while(temp != NULL) {
-        if(strcmp(sim, temp->simbolo) == 0) {
-            end = temp->endereco;
+int RetornaEndereco(char * simbolo, Simbolos *tabela) {
+    int endereco;
+    while(tabela != NULL) {
+        if(strcmp(simbolo, tabela->s_simbolo) == 0) {
+            endereco = tabela->s_endereco;
             break;
         }
-        temp = temp->proximo;
+        tabela = tabela->proximo;
     }
-    return end;
+    return endereco;
 }
 
 
 int main( ) {
-    FILE *arq;
+    FILE *arquivo_entrada;
     char linha[100];
     char *token;
     const char separador[2] = " ";
-    int cod_token, tam_token;
-    int end_atual = 0;
+    int codigo_token, tamanho_token;
+    int posicao_atual = 0;
     Simbolos *tabela = NULL;
 
-    arq = fopen("entrada.txt", "rt");
-    while (!feof(arq)) {
-        fgets(linha, 100, arq);
+    arquivo_entrada = fopen("entrada.txt", "rt");
+    while (!feof(arquivo_entrada)) {
+        fgets(linha, 100, arquivo_entrada);
         linha[strcspn(linha, "\n")] = 0;
         token = strtok(linha, separador);
         if(strchr(token, ':') != NULL) {
-            tam_token = strlen(token);
-            token[tam_token-1] = '\0';
-            tabela = AdicionaEndereco(token, end_atual, tabela);
+            tamanho_token = strlen(token);
+            token[tamanho_token-1] = '\0';
+            tabela = AdicionaEndereco(token, posicao_atual, tabela);
             token = strtok(NULL, separador);
         }
-        cod_token = RetornaCodigoInstrucao(token);
-        if(cod_token < 16) {
+        codigo_token = RetornaCodigoInstrucao(token);
+        if(codigo_token < 16) {
             token = strtok(NULL, separador);
             tabela = AdicionaSimbolo(token, tabela);
-            end_atual = end_atual + 2;
-        } else if(cod_token == 16) {
-            end_atual = end_atual + 1;
-        } else if (cod_token == 17) {
+            posicao_atual = posicao_atual + 2;
+        } else if(codigo_token == 16) {
+            posicao_atual = posicao_atual + 1;
+        } else if (codigo_token == 17) {
             token = strtok(NULL, separador);
-            end_atual = end_atual + 1;
-        } else if (cod_token == 18) {
+            posicao_atual = posicao_atual + 1;
+        } else if (codigo_token == 18) {
             break;
         }
     }
-    fclose(arq);
+    fclose(arquivo_entrada);
 
-    int end_var;
-    end_atual = 0;
-    arq = fopen("entrada.txt", "rt");
-    while (!feof(arq)) {
-        fgets(linha, 100, arq);
+    int posicao_operando_label;
+    posicao_atual = 0;
+    arquivo_entrada = fopen("entrada.txt", "rt");
+    while (!feof(arquivo_entrada)) {
+        fgets(linha, 100, arquivo_entrada);
         linha[strcspn(linha, "\n")] = 0;
         token = strtok(linha, separador);
         if(strchr(token, ':') != NULL) {
             token = strtok(NULL, separador);
         }
-        cod_token = RetornaCodigoInstrucao(token);
-        if(cod_token < 16) {
-            end_atual = end_atual + 2;
-            printf("%i ", cod_token);
+        codigo_token = RetornaCodigoInstrucao(token);
+        if(codigo_token < 15) {
+            posicao_atual = posicao_atual + 2;
+            printf("%i ", codigo_token);
             token = strtok(NULL, separador);
-            end_var = RetornaEndereco(token, tabela);
-            end_var = end_var - end_atual;
-            printf("%i ", end_var);
-        } else if(cod_token == 16) {
-            end_atual = end_atual + 1;
-            printf("%i ", cod_token);
-        } else if (cod_token == 17) {
-            end_atual = end_atual + 1;
+            posicao_operando_label = RetornaEndereco(token, tabela);
+            posicao_operando_label = posicao_operando_label - posicao_atual;
+            printf("%i ", posicao_operando_label);
+        } else if(codigo_token < 17) {
+            posicao_atual = posicao_atual + 1;
+            printf("%i ", codigo_token);
+        } else if (codigo_token == 17) {
+            posicao_atual = posicao_atual + 1;
             printf("%i ", 0);
-        } else if (cod_token == 18) {
+        } else if (codigo_token == 18) {
             break;
         }
     }
-    fclose(arq);
+    fclose(arquivo_entrada);
 }
